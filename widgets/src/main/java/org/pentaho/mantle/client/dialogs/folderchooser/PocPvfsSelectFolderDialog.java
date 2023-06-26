@@ -31,10 +31,17 @@ public class PocPvfsSelectFolderDialog extends PromptDialogBox {
 
   private static final String PVFS_TITLE = "Pvfs Select Title";
   private static final String PVFS_OK = "ok";
-  private static final String PVFS_CANCEL = "ok";
-  // full example: http://127.0.0.1:8080/pentaho/osgi/@pentaho/di-plugin-file-open-save-new-js@9.6.0.0-SNAPSHOT/index.html#!/selectFileFolder?providerFilter=default&filter=TXT,CSV,ALL&defaultFilter=TXT&origin=spoon
-  private static final String PVFS_URL_OPEN_FORMAT = "http://%1$s:%2$s%3$s/di-plugin-file-open-save-new-js@%4$s/index.html#!/selectFileFolder?providerFilter=default&filter=TXT,CSV,ALL&defaultFilter=TXT&origin=spoon";
-
+  private static final String PVFS_CANCEL = "cancel";
+  private static final String host = "localhost";
+  private static final String port = "8081";
+  private static final String contextPath = "/pentaho/osgi";
+  private static final String version = "9.6.0.0-SNAPSHOT";
+  private static final String PVFS_URL_OPEN_FORMAT = "http://%s:%s%s/@pentaho/di-plugin-file-open-save-new-js@%s/index.html#!/selectFileFolder?providerFilter=default&filter=TXT,CSV,ALL&defaultFilter=TXT&origin=spoon";
+  private static final String PVFS_URL_OPEN_FORMAT3 = "http://"
+    + host + ":" + port + contextPath
+    + "/@pentaho/di-plugin-file-open-save-new-js@"
+      + version + "/index.html#!/selectFileFolder?providerFilter=default&filter=TXT,CSV,ALL&defaultFilter=TXT&origin=spoon";
+  private static final String PVFS_URL_OPEN_EXAMPLE="http://localhost:8081/pentaho/osgi/@pentaho/di-plugin-file-open-save-new-js@9.6.0.0-SNAPSHOT/index.html#!/selectFileFolder?providerFilter=default&filter=TXT,CSV,ALL&defaultFilter=TXT&origin=spoon";
   public VerticalPanel dialogContent;
 
   public PocPvfsSelectFolderDialog( String selectedPath ) {
@@ -42,26 +49,37 @@ public class PocPvfsSelectFolderDialog extends PromptDialogBox {
     initializeDialogContent();
   }
 
-  String getOpenUrl() {
-    String host = System.getenv().getOrDefault( "POC_PVFS_HOST", "localhost" );
-    String port = System.getenv().getOrDefault( "POC_PVFS_PORT", "8080" );
-    String contextPath = System.getenv().getOrDefault( "POC_PVFS_CONTEXT_PATH", "/pentaho/osgi" );
-    String version = System.getenv().getOrDefault( "POC_PVFS_VERSION", "9.6.0.0-SNAPSHOT" );
-    return getOpenUrl( host, port, contextPath, version );
-  }
+/*
+ * FIXME can't use String.format in GWT get weird compilation
+ *
+ *  $> ... '/Users/njordan/code_sandbox/pentaho/repo/pentaho-commons-gwt-modules/assemblies/widgets/target/.generated'
+ *      'org.pentaho.gwt.widgets.Widgets' 'org.pentaho.gwt.widgets.client.filechooser.FileChooser'
+ *       'org.pentaho.gwt.widgets.client.formatter.JSTextFormatter' 'org.pentaho.mantle.SchedulingDialogs'
+ */
 
-  String getOpenUrl(String host, String port, String contextPath, String version) {
-    return String.format( PVFS_URL_OPEN_FORMAT, host, port, contextPath, version );
+  String openUrl(){
+    return String_simpleFormat( PVFS_URL_OPEN_FORMAT, host, port, contextPath, version );
   }
 
   void initializeDialogContent() {
     dialogContent = new VerticalFlexPanel();
-    String url = getOpenUrl();
+    String url = PVFS_URL_OPEN_EXAMPLE;
+    url = openUrl();
     Frame frame = new Frame( url ); // NOTE: look at org.pentaho.mantle.client.dialogs.scheduling.ScheduleParamsWizardPanel#setParametsUrl(String) for use of Frame
     dialogContent.add( frame );
     setContent( dialogContent );
   }
 
+  public static String String_simpleFormat( final String strFormat, final String... args) {
+    String[] split = strFormat.split("%s");
+    final StringBuffer msg = new StringBuffer();
+    for (int pos = 0; pos < split.length - 1; pos += 1) {
+      msg.append(split[pos]);
+      msg.append(args[pos]);
+    }
+    msg.append(split[split.length - 1]);
+    return msg.toString();
+  }
 
   /*
    * TODO integrate with {@link org.pentaho.gwt.widgets.client.dialogs.PromptDialogBox#setCallback( IDialogCallback )
