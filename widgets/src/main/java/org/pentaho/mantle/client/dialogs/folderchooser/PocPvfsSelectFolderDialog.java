@@ -27,15 +27,18 @@ public class PocPvfsSelectFolderDialog extends PromptDialogBox {
   private static final String PVFS_OK = "ok";
   private static final String PVFS_CANCEL = "cancel";
 
+  // URL CONFIGURATION
   private static final String PVFS_URL_HOST = "localhost";
   private static final String PVFS_URL_PORT = "8080";
   private static final String PVFS_URL_CONTEXT_PATH = "/pentaho/osgi";
+  private static final String PVFS_URL_VERSION = "9.6.0.0-SNAPSHOT";
 
   public VerticalPanel dialogContent;
 
-  private static final String PVFS_URL_OPEN_FORMAT="http://%s:%s%s/@pentaho/di-plugin-file-open-save-new-js@9.6.0.0-SNAPSHOT/index.html#!/selectFileFolder?providerFilter=default&filter=TXT,CSV,ALL&defaultFilter=TXT&origin=spoon";
-
-  private static final String PVFS_URL_OPEN_EXAMPLE="http://localhost:8080/pentaho/osgi/@pentaho/di-plugin-file-open-save-new-js@9.6.0.0-SNAPSHOT/index.html#!/selectFileFolder?providerFilter=default&filter=TXT,CSV,ALL&defaultFilter=TXT&origin=spoon";
+  /**
+   * Example full url: http://localhost:8080/pentaho/osgi/@pentaho/di-plugin-file-open-save-new-js@9.6.0.0-SNAPSHOT/index.html#!/selectFileFolder?providerFilter=default&filter=TXT,CSV,ALL&defaultFilter=TXT&origin=spoon
+   */
+  private static final String PVFS_URL_OPEN_FORMAT="http://%s:%s%s/@pentaho/di-plugin-file-open-save-new-js@%s/index.html#!/selectFileFolder?providerFilter=default&filter=TXT,CSV,ALL&defaultFilter=TXT&origin=spoon";
 
   /**
    * Proof of Concept class just to display PVFS javascript file browser dialog.
@@ -57,11 +60,11 @@ public class PocPvfsSelectFolderDialog extends PromptDialogBox {
   }
 
   String openUrl() {
-    return openUrl( PVFS_URL_HOST, PVFS_URL_PORT, PVFS_URL_CONTEXT_PATH );
+    return openUrl( PVFS_URL_HOST, PVFS_URL_PORT, PVFS_URL_CONTEXT_PATH, PVFS_URL_VERSION );
   }
 
-  String openUrl ( String host, String port, String contextPath ) {
-    return String_simpleFormat( PVFS_URL_OPEN_FORMAT, host, port, contextPath );
+  String openUrl ( String host, String port, String contextPath, String version ) {
+    return String_simpleFormat( PVFS_URL_OPEN_FORMAT, host, port, contextPath, version );
   }
 
   /*
