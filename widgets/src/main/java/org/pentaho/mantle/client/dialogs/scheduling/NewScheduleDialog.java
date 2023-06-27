@@ -29,6 +29,7 @@ import org.pentaho.gwt.widgets.client.utils.NameUtils;
 import org.pentaho.gwt.widgets.client.utils.string.StringUtils;
 import org.pentaho.gwt.widgets.client.wizards.AbstractWizardDialog.ScheduleDialogType;
 import org.pentaho.mantle.client.dialogs.WaitPopup;
+import org.pentaho.mantle.client.dialogs.folderchooser.PocPvfsSelectFolderDialog;
 import org.pentaho.mantle.client.dialogs.folderchooser.SelectFolderDialog;
 import org.pentaho.mantle.client.messages.Messages;
 import org.pentaho.mantle.client.environment.EnvironmentHelper;
@@ -199,20 +200,25 @@ public class NewScheduleDialog extends PromptDialogBox {
     scheduleLocationLabel.setStyleName( ScheduleEditor.SCHEDULE_LABEL );
     content.add( scheduleLocationLabel );
 
-    Button browseButton = new Button( "poc Select2" );
+    Button browseButton = new Button( "poc Select5" );
     browseButton.addClickHandler( new ClickHandler() {
 
       public void onClick( ClickEvent event ) {
-        final SelectFolderDialog selectFolder = new SelectFolderDialog();
-        selectFolder.setCallback( new IDialogCallback() {
-          public void okPressed() {
-            scheduleLocationTextBox.setText( selectFolder.getSelectedPath() );
-          }
+        if ( 1 + 1 == 2 ) {
+          PocPvfsSelectFolderDialog pvfsSelectFolderDialog = new PocPvfsSelectFolderDialog();
+        }
+        else {
+          final SelectFolderDialog selectFolder = new SelectFolderDialog();
+          selectFolder.setCallback( new IDialogCallback() {
+            public void okPressed() {
+              scheduleLocationTextBox.setText( selectFolder.getSelectedPath() );
+            }
 
-          public void cancelPressed() {
-          }
-        } );
-        selectFolder.center();
+            public void cancelPressed() {
+            }
+          } );
+          selectFolder.center();
+        }
       }
     } );
     browseButton.setStyleName( "pentaho-button" );
