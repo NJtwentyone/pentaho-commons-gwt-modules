@@ -25,8 +25,12 @@ public class PocPvfsSelectFolderDialog extends PromptDialogBox {
 
   private static final String PVFS_TITLE = "Pvfs Select Title";
   private static final String PVFS_OK = "ok";
+  private static final String PVFS_URL_HOST = "localhost";
   private static final String PVFS_CANCEL = "cancel";
+
   public VerticalPanel dialogContent;
+
+  private static final String PVFS_URL_OPEN_FORMAT="http://%s:8080/pentaho/osgi/@pentaho/di-plugin-file-open-save-new-js@9.6.0.0-SNAPSHOT/index.html#!/selectFileFolder?providerFilter=default&filter=TXT,CSV,ALL&defaultFilter=TXT&origin=spoon";
 
   private static final String PVFS_URL_OPEN_EXAMPLE="http://localhost:8080/pentaho/osgi/@pentaho/di-plugin-file-open-save-new-js@9.6.0.0-SNAPSHOT/index.html#!/selectFileFolder?providerFilter=default&filter=TXT,CSV,ALL&defaultFilter=TXT&origin=spoon";
 
@@ -39,8 +43,27 @@ public class PocPvfsSelectFolderDialog extends PromptDialogBox {
   void initializeDialogContent() {
     dialogContent = new VerticalFlexPanel();
     Frame frame = new Frame(); // NOTE: look at org.pentaho.mantle.client.dialogs.scheduling.ScheduleParamsWizardPanel#setParametsUrl(String) for use of Frame
-    frame.setUrl( PVFS_URL_OPEN_EXAMPLE );
+    frame.setUrl( openUrl() );
     dialogContent.add( frame );
     setContent( dialogContent );
+  }
+
+  String openUrl() {
+    return openUrl( PVFS_URL_HOST );
+  }
+
+  String openUrl ( String host ) {
+    return String_simpleFormat( PVFS_URL_OPEN_FORMAT, host );
+  }
+
+  public static String String_simpleFormat( final String strFormat, final String... args) {
+    String[] split = strFormat.split("%s");
+    final StringBuffer msg = new StringBuffer();
+    for (int pos = 0; pos < split.length - 1; pos += 1) {
+      msg.append(split[pos]);
+      msg.append(args[pos]);
+    }
+    msg.append(split[split.length - 1]);
+    return msg.toString();
   }
 }
