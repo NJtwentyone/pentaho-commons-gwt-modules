@@ -28,6 +28,9 @@ public class PocPvfsSelectFolderDialog extends PromptDialogBox {
   private static final String PVFS_CANCEL = "cancel";
   public VerticalPanel dialogContent;
 
+  private static final String PVFS_URL_OPEN_EXAMPLE="http://localhost:8080/pentaho/osgi/@pentaho/di-plugin-file-open-save-new-js@9.6.0.0-SNAPSHOT/index.html#!/selectFileFolder?providerFilter=default&filter=TXT,CSV,ALL&defaultFilter=TXT&origin=spoon";
+
+
   public PocPvfsSelectFolderDialog( String selectedPath ) {
     super( PVFS_TITLE , PVFS_OK, PVFS_CANCEL,false, true );
     initializeDialogContent();
@@ -36,6 +39,7 @@ public class PocPvfsSelectFolderDialog extends PromptDialogBox {
   void initializeDialogContent() {
     dialogContent = new VerticalFlexPanel();
     Frame frame = new Frame(); // NOTE: look at org.pentaho.mantle.client.dialogs.scheduling.ScheduleParamsWizardPanel#setParametsUrl(String) for use of Frame
+    frame.setUrl( PVFS_URL_OPEN_EXAMPLE );
     dialogContent.add( frame );
     setContent( dialogContent );
   }
