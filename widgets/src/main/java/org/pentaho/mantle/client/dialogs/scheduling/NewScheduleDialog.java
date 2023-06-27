@@ -200,12 +200,12 @@ public class NewScheduleDialog extends PromptDialogBox {
     scheduleLocationLabel.setStyleName( ScheduleEditor.SCHEDULE_LABEL );
     content.add( scheduleLocationLabel );
 
-    Button browseButton = new Button( "poc Select5" );
+    Button browseButton = new Button( "poc Select6" );
     browseButton.addClickHandler( new ClickHandler() {
 
       public void onClick( ClickEvent event ) {
         if ( 1 + 1 == 2 ) {
-          PocPvfsSelectFolderDialog pvfsSelectFolderDialog = new PocPvfsSelectFolderDialog();
+          PocPvfsSelectFolderDialog pvfsSelectFolderDialog = new PocPvfsSelectFolderDialog("<ignore-path-debug>");
         }
         else {
           final SelectFolderDialog selectFolder = new SelectFolderDialog();

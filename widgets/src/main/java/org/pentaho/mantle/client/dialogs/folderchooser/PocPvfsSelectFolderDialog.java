@@ -16,5 +16,11 @@ package org.pentaho.mantle.client.dialogs.folderchooser;
  * Copyright (c) 2023 Hitachi Vantara..  All rights reserved.
  */
 
-public class PocPvfsSelectFolderDialog  {
+import org.pentaho.gwt.widgets.client.dialogs.PromptDialogBox;
+
+public class PocPvfsSelectFolderDialog extends PromptDialogBox {
+
+  public PocPvfsSelectFolderDialog( String selectedPath ) {
+    super( "Pvfs Select Title" , "ok", "cancel" ,false, true );
+  }
 }
