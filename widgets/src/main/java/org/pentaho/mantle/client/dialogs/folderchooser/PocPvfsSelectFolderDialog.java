@@ -20,7 +20,11 @@ import org.pentaho.gwt.widgets.client.dialogs.PromptDialogBox;
 
 public class PocPvfsSelectFolderDialog extends PromptDialogBox {
 
+  private static final String PVFS_TITLE = "Pvfs Select Title";
+  private static final String PVFS_OK = "ok";
+  private static final String PVFS_CANCEL = "cancel";
+
   public PocPvfsSelectFolderDialog( String selectedPath ) {
-    super( "Pvfs Select Title" , "ok", "cancel" ,false, true );
+    super( PVFS_TITLE , PVFS_OK, PVFS_CANCEL,false, true );
   }
 }
