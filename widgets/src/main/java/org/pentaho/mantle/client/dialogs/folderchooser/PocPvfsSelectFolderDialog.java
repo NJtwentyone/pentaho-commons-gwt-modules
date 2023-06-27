@@ -16,15 +16,27 @@ package org.pentaho.mantle.client.dialogs.folderchooser;
  * Copyright (c) 2023 Hitachi Vantara..  All rights reserved.
  */
 
+import com.google.gwt.user.client.ui.Frame;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import org.pentaho.gwt.widgets.client.dialogs.PromptDialogBox;
+import org.pentaho.gwt.widgets.client.panel.VerticalFlexPanel;
 
 public class PocPvfsSelectFolderDialog extends PromptDialogBox {
 
   private static final String PVFS_TITLE = "Pvfs Select Title";
   private static final String PVFS_OK = "ok";
   private static final String PVFS_CANCEL = "cancel";
+  public VerticalPanel dialogContent;
 
   public PocPvfsSelectFolderDialog( String selectedPath ) {
     super( PVFS_TITLE , PVFS_OK, PVFS_CANCEL,false, true );
+    initializeDialogContent();
+  }
+
+  void initializeDialogContent() {
+    dialogContent = new VerticalFlexPanel();
+    Frame frame = new Frame(); // NOTE: look at org.pentaho.mantle.client.dialogs.scheduling.ScheduleParamsWizardPanel#setParametsUrl(String) for use of Frame
+    dialogContent.add( frame );
+    setContent( dialogContent );
   }
 }
