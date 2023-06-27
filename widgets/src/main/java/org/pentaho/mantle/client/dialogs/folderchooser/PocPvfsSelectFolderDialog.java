@@ -25,16 +25,23 @@ public class PocPvfsSelectFolderDialog extends PromptDialogBox {
 
   private static final String PVFS_TITLE = "Pvfs Select Title";
   private static final String PVFS_OK = "ok";
-  private static final String PVFS_URL_HOST = "localhost";
   private static final String PVFS_CANCEL = "cancel";
+
+  private static final String PVFS_URL_HOST = "localhost";
+  private static final String PVFS_URL_PORT = "8080";
 
   public VerticalPanel dialogContent;
 
-  private static final String PVFS_URL_OPEN_FORMAT="http://%s:8080/pentaho/osgi/@pentaho/di-plugin-file-open-save-new-js@9.6.0.0-SNAPSHOT/index.html#!/selectFileFolder?providerFilter=default&filter=TXT,CSV,ALL&defaultFilter=TXT&origin=spoon";
+  private static final String PVFS_URL_OPEN_FORMAT="http://%s:%s/pentaho/osgi/@pentaho/di-plugin-file-open-save-new-js@9.6.0.0-SNAPSHOT/index.html#!/selectFileFolder?providerFilter=default&filter=TXT,CSV,ALL&defaultFilter=TXT&origin=spoon";
 
   private static final String PVFS_URL_OPEN_EXAMPLE="http://localhost:8080/pentaho/osgi/@pentaho/di-plugin-file-open-save-new-js@9.6.0.0-SNAPSHOT/index.html#!/selectFileFolder?providerFilter=default&filter=TXT,CSV,ALL&defaultFilter=TXT&origin=spoon";
 
-
+  /**
+   * Proof of Concept class just to display PVFS javascript file browser dialog.
+   * NOTE: No decision is being made on coding style or design.
+   *
+   * Please see https://hv-eng.atlassian.net/browse/BACKLOG-37949 on how to deploy PVFS file browser.
+   */
   public PocPvfsSelectFolderDialog( String selectedPath ) {
     super( PVFS_TITLE , PVFS_OK, PVFS_CANCEL,false, true );
     initializeDialogContent();
@@ -49,13 +56,20 @@ public class PocPvfsSelectFolderDialog extends PromptDialogBox {
   }
 
   String openUrl() {
-    return openUrl( PVFS_URL_HOST );
+    return openUrl( PVFS_URL_HOST, PVFS_URL_PORT );
   }
 
-  String openUrl ( String host ) {
-    return String_simpleFormat( PVFS_URL_OPEN_FORMAT, host );
+  String openUrl ( String host, String port ) {
+    return String_simpleFormat( PVFS_URL_OPEN_FORMAT, host, port );
   }
 
+  /*
+   * FIXME can't use String.format in GWT get weird compilation
+   *
+   *  $> ... '.../pentaho/repo/pentaho-commons-gwt-modules/assemblies/widgets/target/.generated'
+   *      'org.pentaho.gwt.widgets.Widgets' 'org.pentaho.gwt.widgets.client.filechooser.FileChooser'
+   *       'org.pentaho.gwt.widgets.client.formatter.JSTextFormatter' 'org.pentaho.mantle.SchedulingDialogs'
+   */
   public static String String_simpleFormat( final String strFormat, final String... args) {
     String[] split = strFormat.split("%s");
     final StringBuffer msg = new StringBuffer();
