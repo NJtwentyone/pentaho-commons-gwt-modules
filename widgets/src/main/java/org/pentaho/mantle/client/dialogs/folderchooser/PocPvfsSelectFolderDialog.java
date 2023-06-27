@@ -34,6 +34,7 @@ public class PocPvfsSelectFolderDialog extends PromptDialogBox {
   private static final String PVFS_URL_VERSION = "9.6.0.0-SNAPSHOT";
 
   public VerticalPanel dialogContent;
+  public Frame frame;
 
   /**
    * Example full url: http://localhost:8080/pentaho/osgi/@pentaho/di-plugin-file-open-save-new-js@9.6.0.0-SNAPSHOT/index.html#!/selectFileFolder?providerFilter=default&filter=TXT,CSV,ALL&defaultFilter=TXT&origin=spoon
@@ -47,21 +48,30 @@ public class PocPvfsSelectFolderDialog extends PromptDialogBox {
    * Please see https://hv-eng.atlassian.net/browse/BACKLOG-37949 on how to deploy PVFS file browser.
    */
   public PocPvfsSelectFolderDialog( String selectedPath ) {
-    super( PVFS_TITLE , PVFS_OK, PVFS_CANCEL,false, true );
+    super( PVFS_TITLE , PVFS_OK, PVFS_CANCEL,false, true ); // TODO get rid of double set of OK/Cancel button 1 from PromptDialogBox, 1 from PVFS Dialog
     initializeDialogContent();
+    setFrameUrl( selectedPath );
   }
 
   void initializeDialogContent() {
     dialogContent = new VerticalFlexPanel();
-    dialogContent.setWidth( "400px" );
-    dialogContent.setHeight( "400px" );
-    Frame frame = new Frame(); // NOTE: look at org.pentaho.mantle.client.dialogs.scheduling.ScheduleParamsWizardPanel#setParametsUrl(String) for use of Frame
-    frame.setUrl( openUrl() );
-    frame.setHeight( "400px" );
-    frame.setWidth( "400px" );
+    dialogContent.getElement().setId( "pvfs-panel" ); // adding id just for debugging
+    frame = new Frame(); // NOTE: look at org.pentaho.mantle.client.dialogs.scheduling.ScheduleParamsWizardPanel#setParametsUrl(String) for use of Frame
+    frame.getElement().setId( "pvfs-panel-frame" ); // adding id just for debugging
     dialogContent.add( frame );
 
+    // TODO set better defaults and use existing logic for sizing + investigate WCAG for PVFS select folder
+    dialogContent.setHeight( "600px" ); // hard coded just for poc
+    frame.setHeight( "600px" ); // hard coded just for poc
+    setResponsive( true );
+    setSizingMode( DialogSizingMode.FILL_VIEWPORT_WIDTH );
+    setWidthCategory( DialogWidthCategory.EXTRA_LARGE );
+
     setContent( dialogContent );
+  }
+
+  void setFrameUrl(String selectPath) {
+    frame.setUrl( openUrl() ); // TODO consume selectPath
   }
 
   String openUrl() {
