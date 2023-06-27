@@ -53,9 +53,14 @@ public class PocPvfsSelectFolderDialog extends PromptDialogBox {
 
   void initializeDialogContent() {
     dialogContent = new VerticalFlexPanel();
+    dialogContent.setWidth( "400px" );
+    dialogContent.setHeight( "400px" );
     Frame frame = new Frame(); // NOTE: look at org.pentaho.mantle.client.dialogs.scheduling.ScheduleParamsWizardPanel#setParametsUrl(String) for use of Frame
     frame.setUrl( openUrl() );
+    frame.setHeight( "400px" );
+    frame.setWidth( "400px" );
     dialogContent.add( frame );
+
     setContent( dialogContent );
   }
 
