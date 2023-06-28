@@ -16,6 +16,9 @@ package org.pentaho.mantle.client.dialogs.folderchooser;
  * Copyright (c) 2023 Hitachi Vantara..  All rights reserved.
  */
 
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import org.pentaho.gwt.widgets.client.dialogs.PromptDialogBox;
@@ -38,7 +41,7 @@ public class PocPvfsSelectFolderDialog extends PromptDialogBox {
 
   public String jsObject;
 
-  public String testSelectJsonStr = "{\"path\":\"/users/devuser/documents/someFolder\"}";
+  public String testSelectJsonStr = "{\"path\":\"/users/devuser/documents/someFolder\", \"name\":\"someFileName.txt\"}";
 
   /**
    * Example full url: http://localhost:8080/pentaho/osgi/@pentaho/di-plugin-file-open-save-new-js@9.6.0.0-SNAPSHOT/index.html#!/selectFileFolder?providerFilter=default&filter=TXT,CSV,ALL&defaultFilter=TXT&origin=spoon
@@ -89,9 +92,8 @@ public class PocPvfsSelectFolderDialog extends PromptDialogBox {
   }
 
   public String getSelectedPath() {
-    testFnSelect(testSelectJsonStr); // DEBUG assuming PVFS js code calls correct javascript function select()
     return ( jsObject != null )
-      ? jsObject // TODO grab path from json object
+      ? constructPath(jsObject)
       : "<nothing-was-passed-back>";
   }
 
@@ -142,10 +144,34 @@ public class PocPvfsSelectFolderDialog extends PromptDialogBox {
       x.@org.pentaho.mantle.client.dialogs.folderchooser.PocPvfsSelectFolderDialog::setJsObject(Ljava/lang/String;)(amt);
     });
   }-*/;
+/**
+  * TODO update PVFS File Browse select javascript code to call window.parent.select(...) OR look into maybe just putting select() function on iframe
+  * This is due to dialog is rendered in an iframe, so `window` refers to ifrome.
+  * Then `window.parent` actually refers to PUC window where `$wnd` is referencing.
+ */
+
+  public static native void exportSelectGlobal(PocPvfsSelectFolderDialog x) /*-{
+    this.select = $entry(function(amt) {
+      x.@org.pentaho.mantle.client.dialogs.folderchooser.PocPvfsSelectFolderDialog::setJsObject(Ljava/lang/String;)(amt);
+    });
+  }-*/;
 
   public static native void testFnSelect(String strTestJson) /*-{
     $wnd.select(strTestJson);
   }-*/;
+
+  /**
+   * Following code at : https://github.com/pentaho/pentaho-kettle/blob/9.3.0.4/ui/src/main/java/org/pentaho/di/ui/core/events/dialog/SelectionAdapterFileDialog.java#L326-L349
+   * @param jsonStr
+   * @return
+   */
+  public String constructPath( String jsonStr ) {
+    JSONObject jsonObjectSelect =(JSONObject) JSONParser.parseStrict( jsonStr );
+    String path  = jsonObjectSelect.get( "path" ).toString();
+    String filename = jsonObjectSelect.get( "name" ).toString();
+    String fullPath = (path + "/" + filename).replace( "\"","" );
+    return fullPath;
+  }
 
   /*
    * FIXME can't use String.format in GWT get weird compilation

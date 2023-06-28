@@ -200,7 +200,7 @@ public class NewScheduleDialog extends PromptDialogBox {
     scheduleLocationLabel.setStyleName( ScheduleEditor.SCHEDULE_LABEL );
     content.add( scheduleLocationLabel );
 
-    Button browseButton = new Button( "poc Select24" );
+    Button browseButton = new Button( "poc Select28" );
     browseButton.addClickHandler( new ClickHandler() {
 
       public void onClick( ClickEvent event ) {
