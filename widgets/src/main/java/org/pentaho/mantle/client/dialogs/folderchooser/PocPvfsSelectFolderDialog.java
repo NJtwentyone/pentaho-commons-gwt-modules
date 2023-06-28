@@ -36,6 +36,8 @@ public class PocPvfsSelectFolderDialog extends PromptDialogBox {
   public VerticalPanel dialogContent;
   public Frame frame;
 
+  public String jsObj;
+
   /**
    * Example full url: http://localhost:8080/pentaho/osgi/@pentaho/di-plugin-file-open-save-new-js@9.6.0.0-SNAPSHOT/index.html#!/selectFileFolder?providerFilter=default&filter=TXT,CSV,ALL&defaultFilter=TXT&origin=spoon
    */
@@ -80,6 +82,10 @@ public class PocPvfsSelectFolderDialog extends PromptDialogBox {
 
   String openUrl ( String host, String port, String contextPath, String version ) {
     return String_simpleFormat( PVFS_URL_OPEN_FORMAT, host, port, contextPath, version );
+  }
+
+  public String getSelectedPath() {
+    return "<nothing-was-passed-back>";
   }
 
   /*
