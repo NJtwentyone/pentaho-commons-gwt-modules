@@ -36,7 +36,9 @@ public class PocPvfsSelectFolderDialog extends PromptDialogBox {
   public VerticalPanel dialogContent;
   public Frame frame;
 
-  public String jsObj;
+  public String jsObject;
+
+  public String testSelectJsonStr = "{\"path\":\"/users/devuser/documents/someFolder\"}";
 
   /**
    * Example full url: http://localhost:8080/pentaho/osgi/@pentaho/di-plugin-file-open-save-new-js@9.6.0.0-SNAPSHOT/index.html#!/selectFileFolder?providerFilter=default&filter=TXT,CSV,ALL&defaultFilter=TXT&origin=spoon
@@ -69,6 +71,8 @@ public class PocPvfsSelectFolderDialog extends PromptDialogBox {
     setSizingMode( DialogSizingMode.FILL_VIEWPORT_WIDTH );
     setWidthCategory( DialogWidthCategory.EXTRA_LARGE );
 
+
+    exportSelect(this); // inject select() into client
     setContent( dialogContent );
   }
 
@@ -85,8 +89,63 @@ public class PocPvfsSelectFolderDialog extends PromptDialogBox {
   }
 
   public String getSelectedPath() {
-    return "<nothing-was-passed-back>";
+    testFnSelect(testSelectJsonStr); // DEBUG assuming PVFS js code calls correct javascript function select()
+    return ( jsObject != null )
+      ? jsObject // TODO grab path from json object
+      : "<nothing-was-passed-back>";
   }
+
+  public void setJsObject(String jsonObject) {
+    jsObject = jsonObject;
+  }
+
+  /* TODO convert from JSNI to JsInterop, only used JSNI because syntax seems easier
+   JSNI - https://www.gwtproject.org/doc/latest/DevGuideCodingBasicsJSNI.html
+    from page : "(INFO: For new implementations use the future-proof JsInterop instead. JSNI will be removed with GWT 3.)"
+   JsInterop - https://www.gwtproject.org/doc/latest/DevGuideCodingBasicsJsInterop.html
+   */
+
+  /**
+   * Have to inject a javascript function "select" on the client. The PVFS browser select calls this function
+   * to pass back the selected file.
+   * See https://github.com/pentaho/pentaho-kettle/blob/9.3.0.4/plugins/file-open-save-new/core/src/main/javascript/app/services/providers/local.service.js#L170-L178
+   * You will see something like this:
+   * <code>
+   *    function open(file) {
+   *           select(JSON.stringify({
+   *             name: file.name,
+   *             path: file.path,
+   *             parent: file.parent,
+   *             connection: file.connection,
+   *             provider: file.provider
+   *     }));
+   *    }
+   * </code>
+   *
+   *  the function select needs to be added by calling client.
+   *
+   *  PDI SWT had this implementations: https://github.com/pentaho/pentaho-kettle/blob/9.3.0.4/plugins/file-open-save-new/core/src/main/java/org/pentaho/di/plugins/fileopensave/dialog/FileOpenSaveDialog.java#L167-L177
+   *  <code>
+   *        new BrowserFunction( browser, "select" ) {
+   *       @Override public Object function( Object[] arguments ) {
+   *           ... ... ...
+   *           closeBrowserWithParameters( arguments );
+   *            ... ... ...
+   *       }
+   *     };
+   *  </code>
+   *  arguments is the json string and #closeBrowserWithParameters() will eventually parse the json
+   * @param x
+   */
+  public static native void exportSelect(PocPvfsSelectFolderDialog x) /*-{
+    $wnd.select = $entry(function(amt) {
+      x.@org.pentaho.mantle.client.dialogs.folderchooser.PocPvfsSelectFolderDialog::setJsObject(Ljava/lang/String;)(amt);
+    });
+  }-*/;
+
+  public static native void testFnSelect(String strTestJson) /*-{
+    $wnd.select(strTestJson);
+  }-*/;
 
   /*
    * FIXME can't use String.format in GWT get weird compilation
