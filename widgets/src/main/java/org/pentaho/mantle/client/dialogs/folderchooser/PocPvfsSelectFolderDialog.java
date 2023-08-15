@@ -18,7 +18,6 @@ package org.pentaho.mantle.client.dialogs.folderchooser;
 
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
-import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import org.pentaho.gwt.widgets.client.dialogs.PromptDialogBox;
@@ -73,7 +72,6 @@ public class PocPvfsSelectFolderDialog extends PromptDialogBox {
     setResponsive( true );
     setSizingMode( DialogSizingMode.FILL_VIEWPORT_WIDTH );
     setWidthCategory( DialogWidthCategory.EXTRA_LARGE );
-
 
     exportSelect(this); // inject select() into client
     setContent( dialogContent );
@@ -150,12 +148,6 @@ public class PocPvfsSelectFolderDialog extends PromptDialogBox {
   * Then `window.parent` actually refers to PUC window where `$wnd` is referencing.
  */
 
-  public static native void exportSelectGlobal(PocPvfsSelectFolderDialog x) /*-{
-    this.select = $entry(function(amt) {
-      x.@org.pentaho.mantle.client.dialogs.folderchooser.PocPvfsSelectFolderDialog::setJsObject(Ljava/lang/String;)(amt);
-    });
-  }-*/;
-
   public static native void testFnSelect(String strTestJson) /*-{
     $wnd.select(strTestJson);
   }-*/;
@@ -169,7 +161,8 @@ public class PocPvfsSelectFolderDialog extends PromptDialogBox {
     JSONObject jsonObjectSelect =(JSONObject) JSONParser.parseStrict( jsonStr );
     String path  = jsonObjectSelect.get( "path" ).toString();
     String filename = jsonObjectSelect.get( "name" ).toString();
-    String fullPath = (path + "/" + filename).replace( "\"","" );
+    // if jsonStr  isFile, then filename is already included, if jsonStr  isFolder then filename will be blank
+    String fullPath = path.replace( "\"","" );
     return fullPath;
   }
 
